@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS users (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- جدول درس‌های کتاب (شدرس کتاب Prospect 3)
+-- جدول درس‌های کتاب (شش درس کتاب Prospect 3)
 CREATE TABLE IF NOT EXISTS lessons (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     lesson_number INTEGER UNIQUE NOT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS vocabulary (
     part_of_speech TEXT,
     synonyms TEXT,
     antonyms TEXT,
-    examples_json TEXT, -- ذخیره مثال‌ها به صورت ساختاریافته (JSON)
+    examples_json TEXT,
     image_url TEXT,
     audio_url TEXT,
     FOREIGN KEY (lesson_id) REFERENCES lessons(id) ON DELETE CASCADE
@@ -48,6 +48,39 @@ CREATE TABLE IF NOT EXISTS grammar_topics (
     FOREIGN KEY (lesson_id) REFERENCES lessons(id) ON DELETE CASCADE
 );
 
+-- جدول مکالمات (Conversations) هر درس
+CREATE TABLE IF NOT EXISTS conversations (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    lesson_id INTEGER,
+    speaker TEXT NOT NULL,
+    line_en TEXT NOT NULL,
+    line_fa TEXT NOT NULL,
+    audio_timestamp TEXT,
+    FOREIGN KEY (lesson_id) REFERENCES lessons(id) ON DELETE CASCADE
+);
+
+-- جدول متون Reading و درک مطلب
+CREATE TABLE IF NOT EXISTS readings (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    lesson_id INTEGER,
+    title TEXT NOT NULL,
+    passage_text TEXT NOT NULL,
+    translation_fa TEXT NOT NULL,
+    questions_json TEXT, -- سؤالات درک مطلب و True/False
+    FOREIGN KEY (lesson_id) REFERENCES lessons(id) ON DELETE CASCADE
+);
+
+-- جدول تمرینات Writing و نگارش
+CREATE TABLE IF NOT EXISTS writing_exercises (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    lesson_id INTEGER,
+    exercise_type TEXT NOT NULL, -- مثلاً unscramble, fill_in_blanks, sentence_building
+    prompt_text TEXT NOT NULL,
+    correct_answer TEXT NOT NULL,
+    hint TEXT,
+    FOREIGN KEY (lesson_id) REFERENCES lessons(id) ON DELETE CASCADE
+);
+
 -- جدول بانک سؤالات و آزمون‌ها
 CREATE TABLE IF NOT EXISTS questions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -55,7 +88,7 @@ CREATE TABLE IF NOT EXISTS questions (
     question_type TEXT CHECK(question_type IN ('vocabulary', 'grammar', 'reading', 'listening', 'translation', 'mcq', 'true_false')) NOT NULL,
     difficulty TEXT CHECK(difficulty IN ('easy', 'medium', 'hard')) DEFAULT 'medium',
     question_text TEXT NOT NULL,
-    options_json TEXT, -- گزینه‌ها برای سؤالات چهارگزینه‌ای
+    options_json TEXT,
     correct_answer TEXT NOT NULL,
     explanation TEXT,
     FOREIGN KEY (lesson_id) REFERENCES lessons(id) ON DELETE CASCADE
@@ -78,18 +111,9 @@ CREATE TABLE IF NOT EXISTS user_vocabulary (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER,
     vocab_id INTEGER,
-    mastery_level INTEGER DEFAULT 0, -- میزان تسلط برای مرور فاصله‌دار
+    mastery_level INTEGER DEFAULT 0,
     personal_note TEXT,
     is_favorite BOOLEAN DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (vocab_id) REFERENCES vocabulary(id) ON DELETE CASCADE
 );
-
--- درج داده‌های اولیه مربوط به ۶ درس کتاب Prospect 3
-INSERT OR IGNORE INTO lessons (lesson_number, title_fa, title_en, description) VALUES 
-(1, 'درس اول: شخصیت‌ها', 'Lesson 1: Personalities', 'آموزش واژگان، صفات شخصیتی و گرامر مربوط به معرفی افراد'),
-(2, 'درس دوم: مسافرت', 'Lesson 2: Traveling', 'مکالمات سفر، مکان‌های گردشگری و ساختارهای گرامری مرتبط'),
-(3, 'درس سوم: مناشو و جشن‌ها', 'Lesson 3: Festivals and Ceremonies', 'آداب و رسوم، جشن‌ها و مناسبت‌های مختلف'),
-(4, 'درس چهارم: خدمات شهری', 'Lesson 4: Services', 'امکانات شهر، پرسش و پاسخ درباره آدرس و خدمات عمومی'),
-(5, 'درس پنجم: رسانه‌ها و هنر', 'Lesson 5: Media and Art', 'سینما، تلویزیون، هنر و رسانه‌های جمعی'),
-(6, 'درس ششم: سلامت و پزشکی', 'Lesson 6: Health and Medical', 'بیماری‌ها، توصیه‌های پزشکی و سبک زندگی سالم');
