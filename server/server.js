@@ -3,6 +3,9 @@ const cors = require('cors');
 const path = require('path');
 const db = require('./config/db');
 
+// فراخوانی روت‌های محتوای آموزشی
+const contentRoutes = require('./routes/contentRoutes');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -22,6 +25,9 @@ app.get('/api/health', (req, res) => {
         timestamp: new Date().toISOString()
     });
 });
+
+// اتصال مسیرهای محتوای آموزشی به اپلیکیشن
+app.use('/api', contentRoutes);
 
 // مدیریت خطاهای سراسری (Global Error Handler)
 app.use((err, req, res, next) => {
