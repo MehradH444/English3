@@ -8,6 +8,7 @@ const contentRoutes = require('./routes/contentRoutes');
 const module3Routes = require('./routes/module3Routes');
 const quizRoutes = require('./routes/quizRoutes');
 const aiRoutes = require('./routes/aiRoutes');
+const interactiveRoutes = require('./routes/interactiveRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -29,11 +30,12 @@ app.get('/api/health', (req, res) => {
     });
 });
 
-// اتصال تمام مسیرهای ماژول‌های آموزشی و هوش مصنوعی به اپلیکیشن
+// اتصال تمام مسیرهای ماژول‌های آموزشی، هوش مصنوعی و امکانات تعاملی به اپلیکیشن
 app.use('/api', contentRoutes);
 app.use('/api', module3Routes);
 app.use('/api', quizRoutes);
 app.use('/api', aiRoutes);
+app.use('/api', interactiveRoutes);
 
 // مدیریت خطاهای سراسری (Global Error Handler)
 app.use((err, req, res, next) => {
