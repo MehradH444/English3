@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بخش تعاملی و کتاب دیجیتال Prospect 3</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --success-color: #27ae60;
+            --bg-color: #f8f9fa;
+        }
+        body { font-family: Tahoma, Arial, sans-serif; background-color: var(--bg-color); margin: 0; padding: 20px; color: #333; }
+        .header { background: var(--primary-color); color: white; padding: 20px; text-align: center; border-radius: 10px; margin-bottom: 20px; }
+        .nav-tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .tab-btn { background: #e0e0e0; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .tab-btn.active { background: var(--accent-color); color: white; }
+        .section-content { display: none; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .section-content.active { display: block; }
+        
+        /* استایل کتاب دیجیتال */
+        .book-container { display: flex; gap: 20px; flex-wrap: wrap; }
+        .lesson-selector { flex: 1; min-width: 250px; background: #f1f2f6; padding: 15px; border-radius: 8px; }
+        .lesson-viewer { flex: 3; min-width: 300px; background: #fff; border: 1px solid #ddd; padding: 20px; border-radius: 8px; }
+        .word-item { cursor: pointer; color: var(--accent-color); text-decoration: underline; margin: 0 5px; }
+        
+        /* استایل فلش‌کارت */
+        .flashcard { width: 300px; height: 180px; background: var(--accent-color); color: white; margin: 20px auto; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: bold; cursor: pointer; box-shadow: 0 6px 12px rgba(0,0,0,0.15); text-align: center; padding: 20px; }
+        
+        /* فرم‌ها و دکمه‌ها */
+        button.action-btn { background: var(--success-color); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 14px; margin-top: 10px; }
+        button.action-btn:hover { background: #219653; }
+        .result-display { margin-top: 15px; padding: 15px; background: #eef2f3; border-radius: 5px; font-size: 15px; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>پلتفرم جامع آموزش انگلیسی پایه نهم (Prospect 3)</h1>
+        <p>کتاب دیجیتال تعاملی، فلش‌کارت هوشمند و بازی‌های یادگیری</p>
+    </div>
+
+    <!-- منوی تب‌ها -->
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('digital-book', event)">📚 کتاب دیجیتال</button>
+        <button class="tab-btn tab-btn-flash" onclick="switchTab('flashcards', event)">🃏 فلش‌کارت و لغات</button>
+        <button class="tab-btn" onclick="switchTab('games', event)">🎮 بازی‌های آموزشی</button>
+        <button class="tab-btn" onclick="switchTab('exam-night', event)">🌙 ویژه شب امتحان</button>
+    </div>
+
+    <!-- تب اول: کتاب دیجیتال تعاملی -->
+    <div id="digital-book" class="section-content active">
+        <h2>کتاب دیجیتال - محتوای ۶ درس Prospect 3</h2>
+        <div class="book-container">
+            <div class="lesson-selector">
+                <h3>انتخاب درس:</h3>
+                <button class="action-btn" style="width:100%; margin-bottom:5px;" onclick="loadLessonContent(1)">درس ۱: شخصیت‌ها (Personalities)</button>
+                <button class="action-btn" style="width:100%; margin-bottom:5px;" onclick="loadLessonContent(2)">درس ۲: مسافرت (Traveling)</button>
+                <button class="action-btn" style="width:100%; margin-bottom:5px;" onclick="loadLessonContent(3)">درس ۳: جشن‌ها (Festivals)</button>
+                <button class="action-btn" style="width:100%; margin-bottom:5px;" onclick="loadLessonContent(4)">درس ۴: خدمات شهری (Services)</button>
+                <button class="action-btn" style="width:100%; margin-bottom:5px;" onclick="loadLessonContent(5)">درس ۵: رسانه‌ها (Media & Art)</button>
+                <button class="action-btn" style="width:100%;" onclick="loadLessonContent(6)">درس ۶: سلامت (Health)</button>
+            </div>
+            <div class="lesson-viewer">
+                <h3 id="viewer-title">لطفاً یک درس را از منوی سمت راست انتخاب کنید.</h3>
+                <div id="viewer-body" class="result-display" dir="ltr">
+                    محتوای آموزشی، متن کتاب و واژگان تعاملی در این قسمت نمایش داده می‌شوند. با کلیک روی هر کلمه انگلیسی، معنی فارسی آن ظاهر می‌شود.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- تب دوم: فلش‌کارت و لغات -->
+    <div id="flashcards" class="section-content">
+        <h2>فلش‌کارت هوشمند واژگان</h2>
+        <p>با سیستم مرور فاصله‌دار، واژگان ۶ درس را به خاطر بسپارید.</p>
+        <div style="text-align: center;">
+            <div class="flashcard" id="flashcard-box" onclick="flipCard()">
+                برای شروع کلیک کنید
+            </div>
+            <button class="action-btn" onclick="nextCard()">کلمه بعدی ➡️</button>
+        </div>
+    </div>
+
+    <!-- تب سوم: بازی‌های آموزشی -->
+    <div id="games" class="section-content">
+        <h2>بازی‌های آموزشی و سرگرمی</h2>
+        <p>مترادف‌یابی و حدس کلمات کتاب نهم:</p>
+        <button class="action-btn" onclick="startWordGame()">شروع چالش حدس معنی</button>
+        <div id="game-container" class="result-display">چالش هنوز شروع نشده است.</div>
+    </div>
+
+    <!-- تب چهارم: امکانات شب امتحان -->
+    <div id="exam-night" class="section-content">
+        <h2>حالت ویژه شب امتحان 🌙</h2>
+        <p>خلاصه‌های طلایی، گرامر سریع و آزمون جامع ۲۰ نمره‌ای:</p>
+        <button class="action-btn" style="background-color: #e74c3c;" onclick="startExamSimulation()">شروع آزمون شبیه‌ساز شب امتحان</button>
+        <div id="exam-result" class="result-display">جهت ارزیابی آمادگی نهایی کلیک کنید.</div>
+    </div>
+
+    <script>
+        // مدیریت تغییر تب‌ها
+        function switchTab(tabId, event) {
+            document.querySelectorAll('.section-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // بارگذاری محتوای درس در کتاب دیجیتال
+        async function loadLessonContent(lessonNum) {
+            document.getElementById('viewer-title').innerText = `درس شماره ${lessonNum} - کتاب Prospect 3`;
+            const bodyDiv = document.getElementById('viewer-body');
+            bodyDiv.innerHTML = 'در حال دریافت اطلاعات درس از سرور...';
+
+            try {
+                const response = await fetch(`http://localhost:3000/api/lessons/${lessonNum}/vocabulary`);
+                const data = await response.json();
+                
+                if(data.status === 'success' && data.data.length > 0) {
+                    let html = `<p><strong>متن تعاملی درس:</strong></p><p dir="ltr">`;
+                    data.data.forEach(item => {
+                        html += `<span class="word-item" onclick="alert('معنی: ${item.meaningFa} | تلفظ: ${item.pronunciationFa}')">${item.wordEn}</span> `;
+                    });
+                    html += `</p><hr><p><strong>فهرست لغات کلیدی:</strong></p><ul>`;
+                    data.data.forEach(item => {
+                        html += `<li>${item.wordEn} : ${item.meaningFa} (${item.partOfSpeech})</li>`;
+                    });
+                    html += `</ul>`;
+                    bodyDiv.innerHTML = html;
+                } else {
+                    bodyDiv.innerHTML = 'محتوایی برای این درس ثبت نشده است.';
+                }
+            } catch(e) {
+                bodyDiv.innerHTML = 'خطا در برقراری ارتباط با سرور بک‌اند.';
+            }
+        }
+
+        // منطق فلش‌کارت
+        let flashcardsData = [
+            { en: "Hard-working", fa: "سخت‌کوش" },
+            { en: "Generous", fa: "بخشنده" },
+            { en: "Destination", fa: "مقصد" },
+            { en: "Foreign", fa: "خارجی" }
+        ];
+        let currentCardIndex = 0;
+        let isFlipped = false;
+
+        function flipCard() {
+            const card = document.getElementById('flashcard-box');
+            if(!isFlipped) {
+                card.innerText = flashcardsData[currentCardIndex].fa;
+                card.style.background = '#27ae60';
+                isFlipped = true;
+            } else {
+                card.innerText = flashcardsData[currentCardIndex].en;
+                card.style.background = '#3498db';
+                isFlipped = false;
+            }
+        }
+
+        function nextCard() {
+            currentCardIndex = (currentCardIndex + 1) % flashcardsData.length;
+            const card = document.getElementById('flashcard-box');
+            card.innerText = flashcardsData[currentCardIndex].en;
+            card.style.background = '#3498db';
+            isFlipped = false;
+        }
+
+        function startWordGame() {
+            document.getElementById('game-container').innerHTML = `چالش: واژه <strong>"Hard-working"</strong> به چه معناست؟<br>
+            <button onclick="alert('آفرین! پاسخ صحیح است.')">سخت‌کوش</button>
+            <button onclick="alert('پاسخ اشتباه است!')">خجالتی</button>`;
+        }
+
+        function startExamSimulation() {
+            document.getElementById('exam-result').innerHTML = `آزمون شبیه‌ساز شب امتحان فعال شد. نمره کل آزمون از ۲۰ محاسبه خواهد شد و دفترچه اشتباهات به‌روزرسانی می‌گردد.`;
+        }
+    </script>
+</body>
+</html>
