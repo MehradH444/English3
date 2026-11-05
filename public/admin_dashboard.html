@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پنل مدیریت، معلمان و والدین - Prospect 3</title>
+    <style>
+        :root {
+            --primary-color: #34495e;
+            --accent-color: #e67e22;
+            --success-color: #27ae60;
+            --danger-color: #c0392b;
+            --bg-color: #f4f6f7;
+        }
+        body { font-family: Tahoma, Arial, sans-serif; background-color: var(--bg-color); margin: 0; padding: 20px; color: #333; }
+        .header { background: var(--primary-color); color: white; padding: 20px; text-align: center; border-radius: 10px; margin-bottom: 20px; }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        h2 { color: var(--accent-color); border-bottom: 2px solid #eee; padding-bottom: 10px; font-size: 18px; }
+        label { display: block; margin-top: 10px; font-weight: bold; font-size: 13px; }
+        input, select, textarea { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        button { background: var(--success-color); color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-size: 14px; margin-top: 15px; width: 100%; }
+        button:hover { background: #219653; }
+        .btn-danger { background: var(--danger-color); }
+        .btn-danger:hover { background: #a93226; }
+        .output-box { margin-top: 15px; padding: 10px; background: #eef2f3; border-radius: 5px; font-size: 13px; max-height: 200px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>سامانه مدیریت و نظارت آموزشی Prospect 3</h1>
+        <p>پنل‌های اختصاصی مدیریت محتوا، معلمان و والدین</p>
+    </div>
+
+    <div class="dashboard-grid">
+        <!-- بخش اول: پنل مدیریت محتوا (CMS) -->
+        <div class="card">
+            <h2>🛠️ پنل مدیریت محتوا (افزودن واژه جدید)</h2>
+            <form id="vocab-form" onsubmit="addVocabulary(event)">
+                <label>شماره درس (۱ تا ۶):</label>
+                <input type="number" id="lessonId" min="1" max="6" required value="1">
+                
+                <label>کلمه انگلیسی (Word):</label>
+                <input type="text" id="wordEn" required placeholder="مثال: Generous">
+                
+                <label>معنی فارسی:</label>
+                <input type="text" id="meaningFa" required placeholder="مثال: بخشنده">
+                
+                <label>نقش دستوری (Part of Speech):</label>
+                <select id="partOfSpeech">
+                    <option value="Noun">اسم (Noun)</option>
+                    <option value="Adjective">صفت (Adjective)</option>
+                    <option value="Verb">فعل (Verb)</option>
+                    <option value="Adverb">قید (Adverb)</option>
+                </select>
+
+                <button type="submit">ثبت و افزودن به پایگاه داده</button>
+            </form>
+            <div id="cms-result" class="output-box">منتظر ثبت اطلاعات...</div>
+        </div>
+
+        <!-- بخش دوم: پنل پشتیبان‌گیری و سلامت سرور -->
+        <div class="card">
+            <h2>⚙️ زیرساخت و نگهداری سیستم</h2>
+            <p>مدیریت نسخه‌های پشتیبان پایگاه داده و نظارت بر منابع سرور.</p>
+            <button onclick="triggerBackup()" class="action-btn">تهیه نسخه پشتیبان (Backup) از دیتابیس</button>
+            <button onclick="checkServerStatus()" class="action-btn" style="background-color: #2980b9; margin-top: 10px;">بررسی وضعیت سلامت سرور</button>
+            <div id="system-result" class="output-box">وضعیت سیستم عادی است.</div>
+        </div>
+
+        <!-- بخش سوم: پنل معلمان و والدین -->
+        <div class="card">
+            <h2>📊 پنل نظارت معلمان و والدین</h2>
+            <p>مشاهده گزارش پیشرفت دانش‌آموزان و نتایج آزمون‌ها:</p>
+            
+            <label>انتخاب نقش:</label>
+            <select id="monitorRole">
+                <option value="teacher">معلم (Teacher)</option>
+                <option value="parent">والدین (Parent)</option>
+            </select>
+
+            <button onclick="fetchReports()" style="background-color: #8e44ad;">بارگذاری گزارشات تحصیلی</button>
+            <div id="report-result" class="output-box">گزارشی بارگذاری نشده است.</div>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'http://localhost:3000/api';
+
+        // ۱. افزودن واژه جدید توسط مدیر
+        async function addVocabulary(event) {
+            event.preventDefault();
+            const resultBox = document.getElementById('cms-result');
+            resultBox.innerText = 'در حال ارسال اطلاعات به سرور...';
+
+            const payload = {
+                lessonId: parseInt(document.getElementById('lessonId').value),
+                wordEn: document.getElementById('wordEn').value,
+                meaningFa: document.getElementById('meaningFa').value,
+                partOfSpeech: document.getElementById('partOfSpeech').value,
+                pronunciationFa: 'تلفظ فرضی',
+                ipa: '/ipa/',
+                examples: ["Example sentence 1."]
+            };
+
+            try {
+                const response = await fetch(`${BASE_URL}/admin/vocabulary/add`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await response.json();
+                if(data.status === 'success') {
+                    resultBox.innerText = `موفقیت: ${data.message} (شناسه واژه: ${data.vocabId})`;
+                } else {
+                    resultBox.innerText = `خطا: ${data.message}`;
+                }
+            } catch(e) {
+                resultBox.innerText = `خطای شبکه: ${e.message}`;
+            }
+        }
+
+        // ۲. تهیه پشتیبان از پایگاه داده
+        async function triggerBackup() {
+            const resultBox = document.getElementById('system-result');
+            resultBox.innerText = 'در حال تهیه فایل پشتیبان...';
+            try {
+                const response = await fetch(`${BASE_URL}/admin/backup`, { method: 'POST' });
+                const data = await response.json();
+                if(data.status === 'success') {
+                    resultBox.innerText = `موفقیت: ${data.message}\nفایل: ${data.backupFile}`;
+                } else {
+                    resultBox.innerText = 'خطا در تهیه پشتیبان.';
+                }
+            } catch(e) {
+                resultBox.innerText = `خطای شبکه: ${e.message}`;
+            }
+        }
+
+        // ۳. بررسی سلامت سرور
+        async function checkServerStatus() {
+            const resultBox = document.getElementById('system-result');
+            resultBox.innerText = 'در حال بررسی منابع سرور...';
+            try {
+                const response = await fetch(`${BASE_URL}/admin/server/health`);
+                const data = await response.json();
+                if(data.status === 'success') {
+                    resultBox.innerText = `وضعیت دیتابیس: ${data.databaseStatus}\nکل کاربران: ${data.totalUsersRegistered}\nمصرف رم: ${data.memoryUsageMB.heapUsed} مگابایت`;
+                }
+            } catch(e) {
+                resultBox.innerText = `خطای شبکه: ${e.message}`;
+            }
+        }
+
+        // ۴. دریافت گزارش‌های معلمان و والدین
+        async function fetchReports() {
+            const role = document.getElementById('monitorRole').value;
+            const resultBox = document.getElementById('report-result');
+            resultBox.innerText = 'در حال دریافت گزارش پیشرفت...';
+
+            try {
+                const response = await fetch(`${BASE_URL}/dashboard/${role}/1`);
+                const data = await response.json();
+                if(data.status === 'success' && data.monitoredRecords.length > 0) {
+                    let html = `<ul>`;
+                    data.monitoredRecords.forEach(rec => {
+                        html += `<li><strong>${rec.full_name}</strong>: آزمون ${rec.test_type} - نمره: ${rec.score}</li>`;
+                    });
+                    html += `</ul>`;
+                    resultBox.innerHTML = html;
+                } else {
+                    resultBox.innerText = 'هیچ رکورد تحصیلی ثبت‌شده‌ای یافت نشد.';
+                }
+            } catch(e) {
+                resultBox.innerText = `خطای شبکه: ${e.message}`;
+            }
+        }
+    </script>
+</body>
+</html>
