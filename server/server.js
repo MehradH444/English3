@@ -6,6 +6,7 @@ const db = require('./config/db');
 // فراخوانی روت‌ها
 const contentRoutes = require('./routes/contentRoutes');
 const module3Routes = require('./routes/module3Routes');
+const quizRoutes = require('./routes/quizRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -30,6 +31,7 @@ app.get('/api/health', (req, res) => {
 // اتصال مسیرهای ماژول‌های آموزشی به اپلیکیشن
 app.use('/api', contentRoutes);
 app.use('/api', module3Routes);
+app.use('/api', quizRoutes);
 
 // مدیریت خطاهای سراسری (Global Error Handler)
 app.use((err, req, res, next) => {
