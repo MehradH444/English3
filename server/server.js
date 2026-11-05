@@ -3,10 +3,11 @@ const cors = require('cors');
 const path = require('path');
 const db = require('./config/db');
 
-// فراخوانی روت‌ها
+// فراخوانی تمام روت‌های ماژول‌ها
 const contentRoutes = require('./routes/contentRoutes');
 const module3Routes = require('./routes/module3Routes');
 const quizRoutes = require('./routes/quizRoutes');
+const aiRoutes = require('./routes/aiRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -28,10 +29,11 @@ app.get('/api/health', (req, res) => {
     });
 });
 
-// اتصال مسیرهای ماژول‌های آموزشی به اپلیکیشن
+// اتصال تمام مسیرهای ماژول‌های آموزشی و هوش مصنوعی به اپلیکیشن
 app.use('/api', contentRoutes);
 app.use('/api', module3Routes);
 app.use('/api', quizRoutes);
+app.use('/api', aiRoutes);
 
 // مدیریت خطاهای سراسری (Global Error Handler)
 app.use((err, req, res, next) => {
