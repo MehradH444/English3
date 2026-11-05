@@ -9,6 +9,7 @@ const module3Routes = require('./routes/module3Routes');
 const quizRoutes = require('./routes/quizRoutes');
 const aiRoutes = require('./routes/aiRoutes');
 const interactiveRoutes = require('./routes/interactiveRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -21,7 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 // سرویس‌دهی به فایل‌های استاتیک فرانت‌اند
 app.use(express.static(path.join(__dirname, '../public')));
 
-// مسیر تست سلامت سرور
+// مسیر تست سلامت عمومی سرور
 app.get('/api/health', (req, res) => {
     res.status(200).json({
         status: 'success',
@@ -30,12 +31,13 @@ app.get('/api/health', (req, res) => {
     });
 });
 
-// اتصال تمام مسیرهای ماژول‌های آموزشی، هوش مصنوعی و امکانات تعاملی به اپلیکیشن
+// اتصال تمام مسیرهای ماژول‌های آموزشی، هوش مصنوعی، تعاملی و مدیریت به اپلیکیشن
 app.use('/api', contentRoutes);
 app.use('/api', module3Routes);
 app.use('/api', quizRoutes);
 app.use('/api', aiRoutes);
 app.use('/api', interactiveRoutes);
+app.use('/api', adminRoutes);
 
 // مدیریت خطاهای سراسری (Global Error Handler)
 app.use((err, req, res, next) => {
