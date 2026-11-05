@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پلتفرم هوشمند آموزش انگلیسی - پایه نهم (Prospect 3)</title>
+    <style>
+        body { font-family: Tahoma, Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
+        header { background-color: #2c3e50; color: #fff; padding: 15px; text-align: center; border-radius: 8px; margin-bottom: 20px; }
+        .container { display: flex; flex-wrap: wrap; gap: 20px; }
+        .card { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); flex: 1; min-width: 300px; }
+        h2 { color: #2980b9; border-bottom: 2px solid #ecf0f1; padding-bottom: 10px; }
+        button { background-color: #27ae60; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-size: 14px; margin-top: 10px; }
+        button:hover { background-color: #2ecc71; }
+        input[type="text"] { width: calc(100% - 22px); padding: 10px; margin-top: 10px; border: 1px solid #ccc; border-radius: 5px; }
+        .result-box { margin-top: 15px; padding: 10px; background-color: #ecf0f1; border-radius: 5px; min-height: 50px; font-size: 14px; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>پلتفرم آموزش انگلیسی Prospect 3</h1>
+        <p>دستیار هوشمند، آزمون‌ساز و آزمایشگاه زبان</p>
+    </header>
+
+    <div class="container">
+        <!-- بخش وضعیت سرور -->
+        <div class="card">
+            <h2>داشبورد سیستم (Admin)</h2>
+            <p>بررسی وضعیت سلامت سرور و پایگاه داده:</p>
+            <button onclick="checkServerHealth()">بررسی وضعیت سرور</button>
+            <div id="health-result" class="result-box">منتظر درخواست...</div>
+        </div>
+
+        <!-- بخش لغات درس -->
+        <div class="card">
+            <h2>فرهنگ لغت هوشمند</h2>
+            <p>دریافت لغات درس اول:</p>
+            <button onclick="getVocabulary(1)">بارگذاری لغات درس ۱</button>
+            <div id="vocab-result" class="result-box">منتظر درخواست...</div>
+        </div>
+
+        <!-- بخش دستیار هوش مصنوعی -->
+        <div class="card">
+            <h2>معلم خصوصی هوش مصنوعی</h2>
+            <p>سؤال خود را درباره گرامر یا معنی بپرسید:</p>
+            <input type="text" id="ai-question" placeholder="مثال: گرامر حال ساده چیه؟">
+            <button onclick="askAi()">پرسیدن سؤال</button>
+            <div id="ai-result" class="result-box">منتظر درخواست...</div>
+        </div>
+
+        <!-- بخش آزمون‌ساز -->
+        <div class="card">
+            <h2>آزمون‌ساز پویا</h2>
+            <p>تولید یک آزمون تصادفی ۵ سؤالی از درس ۱:</p>
+            <button onclick="generateQuiz(1, 5)">ساخت آزمون</button>
+            <div id="quiz-result" class="result-box">منتظر درخواست...</div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
